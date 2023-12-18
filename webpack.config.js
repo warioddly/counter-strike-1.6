@@ -1,73 +1,69 @@
+
+
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const fs = require('fs');
+const ncp = require('ncp').ncp;
 
-const isProduction = process.env.NODE_ENV === 'production';
+// Get a list of directories in the 'src/assets' directory
+const assetDirectories = fs.readdirSync('src/assets', { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
 
-const stylesHandler = MiniCssExtractPlugin.loader;
 
-const config = {
-    entry: './src/main.ts',
+module.exports = {
+    entry: './src/main.ts', // Your entry point
     output: {
-        path: path.resolve(__dirname, 'build'),
         filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
     },
-    resolve: {
-        extensions: ['.ts', '.js'],
-    },
-    devServer: {
-        open: true,
-        host: 'localhost',
-    },
-    plugins: [
-        new HtmlWebpackPlugin({ template: 'index.html' }),
-        new MiniCssExtractPlugin(),
-    ],
     module: {
         rules: [
             {
                 test: /\.(ts|js)$/i,
-                loader: 'ts-loader',
                 exclude: /node_modules/,
+                use: ['ts-loader'],
             },
             {
-                test: /\.css$/i,
-                use: [stylesHandler, 'css-loader'],
-            },
-            {
-                test: /\.s[ac]ss$/i,
-                use: [stylesHandler, 'css-loader', 'sass-loader'],
-            },
-            {
-                test: /\.(png|jpe?g|gif|svg|jpg)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: '/assets/images/[name][ext]',
-                },
-            },
-            {
-                test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: '/assets/videos/[name][ext]',
-                },
-            },
-            {
-                test: /\.(glsl|vs|fs|vert|frag)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: '/assets/shaders/[name][ext]',
-                },
-            },
+                test: /\.(gltf|bin|glb|obj)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            esModule: false,
+                        },
+                    },
+                ],
+            }
         ],
     },
-};
+    plugins: [
+        new HtmlWebpackPlugin({ template: 'index.html' }),
+        ...assetDirectories.map(directory => ({
+            apply: (compiler) => {
+                compiler.hooks.afterEmit.tap('CopyWebpackPlugin', () => {
+                    const sourcePath = path.join(__dirname, `src/assets/${directory}`);
+                    const destinationPath = path.join(__dirname, `dist/assets/${directory}`);
 
-module.exports = () => {
-    if (isProduction) {
-        config.mode = 'production';
-    } else {
-        config.mode = 'development';
-    }
-    return config;
+                    // Ensure that the parent directory exists
+                    if (!fs.existsSync(destinationPath)) {
+                        fs.mkdirSync(destinationPath, { recursive: true });
+                    }
+
+                    console.log(`Copying assets from src/assets/${directory}`);
+                    ncp(sourcePath, destinationPath, (err) => {
+                        if (err) {
+                            return console.error(err);
+                        }
+                        console.log(`Assets from src/assets/${directory} copied successfully`);
+                    });
+                });
+            },
+        })),
+    ],
+    devServer: {
+        static: path.join(__dirname, 'dist'), // or whichever directory you want to serve
+        port: 8080,
+        open: true,
+    },
 };
