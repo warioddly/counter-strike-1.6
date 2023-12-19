@@ -31,7 +31,7 @@ export class Player extends Character {
             }
         } );
 
-        new GLTFLoader().load('/assets/objects/sas__cs2_agent_model_red/scene.gltf', ( gltf ) => {
+        new GLTFLoader().load('assets/objects/sas__cs2_agent_model_red/scene.gltf', ( gltf ) => {
 
             this.mesh = gltf.scene;
             this.mesh.scale.set(0.6, 0.6, 0.6);
