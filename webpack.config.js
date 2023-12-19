@@ -12,10 +12,15 @@ const assetDirectories = fs.readdirSync('src/assets', { withFileTypes: true })
 
 
 module.exports = {
+    mode: 'production',
     entry: './src/main.ts', // Your entry point
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'build'),
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     },
     module: {
         rules: [
@@ -43,7 +48,7 @@ module.exports = {
             apply: (compiler) => {
                 compiler.hooks.afterEmit.tap('CopyWebpackPlugin', () => {
                     const sourcePath = path.join(__dirname, `src/assets/${directory}`);
-                    const destinationPath = path.join(__dirname, `dist/assets/${directory}`);
+                    const destinationPath = path.join(__dirname, `build/assets/${directory}`);
 
                     // Ensure that the parent directory exists
                     if (!fs.existsSync(destinationPath)) {
@@ -62,7 +67,7 @@ module.exports = {
         })),
     ],
     devServer: {
-        static: path.join(__dirname, 'dist'), // or whichever directory you want to serve
+        static: path.join(__dirname, 'build'), // or whichever directory you want to serve
         port: 8080,
         open: true,
     },
