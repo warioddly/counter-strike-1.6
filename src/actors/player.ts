@@ -6,6 +6,7 @@ import {Character} from "./character";
 import {CharacterUtils} from "../utils";
 import {Capsule} from "three/examples/jsm/math/Capsule";
 import {PLAYER_SPEED, STEPS_PER_FRAME, PLAYER_MOUSE_SENSITIVITY} from "../constants";
+import {pathResolver} from "../utils/path_resolver";
 
 
 export class Player extends Character {
@@ -31,7 +32,7 @@ export class Player extends Character {
             }
         } );
 
-        new GLTFLoader().load('/assets/objects/sas__cs2_agent_model_red/scene.gltf', ( gltf ) => {
+        new GLTFLoader().load(pathResolver('assets/objects/sas__cs2_agent_model_red/scene.gltf'), ( gltf ) => {
 
             this.model = gltf.scene;
             this.model.scale.set(0.6, 0.6, 0.6);

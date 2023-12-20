@@ -1,8 +1,8 @@
 
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { game } from "../modules";
+import {pathResolver} from "../utils/path_resolver";
 
 export class World {
 
@@ -12,7 +12,7 @@ export class World {
 
         game.scene.add( new THREE.AmbientLight( 0xFFFFFF ) );
 
-        new GLTFLoader().load('/assets/objects/de_dust2_-_cs_map/scene.gltf', ( gltf ) => {
+        new GLTFLoader().load(pathResolver('assets/objects/de_dust2_-_cs_map/scene.gltf'), ( gltf ) => {
 
             const scene = gltf.scene;
             const boundingBox = new THREE.Box3().setFromObject(scene);

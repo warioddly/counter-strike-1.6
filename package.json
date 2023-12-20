@@ -1,7 +1,7 @@
 {
   "name": "counter_strike_1.6",
   "version": "1.0.0",
-  "description": "three test project",
+  "description": "counter strike 1.6 test project",
   "main": "main.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -14,15 +14,14 @@
   "license": "ISC",
   "dependencies": {
     "clean-webpack-plugin": "^4.0.0",
-    "stats.js": "^0.17.0",
     "three": "^0.154.0"
   },
   "devDependencies": {
     "@yushijinhun/three-minifier-webpack": "^0.4.0",
     "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.3",
-    "mini-css-extract-plugin": "^2.7.6",
     "ncp": "^2.0.0",
     "null-loader": "^4.0.1",
     "ts-loader": "^9.5.1",
