@@ -1,0 +1,11 @@
+Model Information:
+* title:	de_dust2 - CS map
+* source:	https://sketchfab.com/3d-models/de-dust2-cs-map-056008d59eb849a29c0ab6884c0c3d87
+* author:	vrchris (https://sketchfab.com/vrchris)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "de_dust2 - CS map" (https://sketchfab.com/3d-models/de-dust2-cs-map-056008d59eb849a29c0ab6884c0c3d87) by vrchris (https://sketchfab.com/vrchris) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
