@@ -4,11 +4,12 @@ import { Capsule } from 'three/examples/jsm/math/Capsule.js';
 
 export abstract class Character {
 
-    protected mesh: THREE.Object3D;
-    protected keyStates: { [key: string]: boolean } = {};
-    protected velocity: THREE.Vector3 = new THREE.Vector3();
+    protected model: THREE.Object3D;
     protected collider: Capsule;
+    protected velocity: THREE.Vector3 = new THREE.Vector3();
     protected direction: THREE.Vector3 = new THREE.Vector3();
+    protected keyStates: { [key: string]: boolean } = {};
+    private skeleton: THREE.Skeleton;
 
     protected initialized: boolean = false;
 

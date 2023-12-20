@@ -31,14 +31,13 @@ export class Player extends Character {
             }
         } );
 
-        new GLTFLoader().load('assets/objects/sas__cs2_agent_model_red/scene.gltf', ( gltf ) => {
+        new GLTFLoader().load('/assets/objects/sas__cs2_agent_model_red/scene.gltf', ( gltf ) => {
 
-            this.mesh = gltf.scene;
-            this.mesh.scale.set(0.6, 0.6, 0.6);
+            this.model = gltf.scene;
+            this.model.scale.set(0.6, 0.6, 0.6);
 
-            game.scene.add( this.mesh );
+            game.scene.add( this.model );
 
-            console.log(this.mesh);
             this.initialized = true;
 
         });
@@ -107,8 +106,6 @@ export class Player extends Character {
         this.collider.translate( deltaPosition );
 
         game.camera.position.copy( this.collider.end );
-
-        // this.mesh.position.copy( this.collider.end );
 
     }
 

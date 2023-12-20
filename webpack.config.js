@@ -1,26 +1,32 @@
 
-
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const fs = require('fs');
-const ncp = require('ncp').ncp;
+const CopyPlugin = require("copy-webpack-plugin");
+const ThreeMinifierPlugin = require("@yushijinhun/three-minifier-webpack");
+const threeMinifier = new ThreeMinifierPlugin();
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 
-// Get a list of directories in the 'src/assets' directory
-const assetDirectories = fs.readdirSync('src/assets', { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-
+const mode = process.env.NODE_ENV || 'development';
 
 module.exports = {
-    mode: 'production',
-    entry: './src/main.ts', // Your entry point
+    mode: mode,
+    devtool: (mode === 'development') ? 'inline-source-map' : false,
+    performance: {
+        hints: false
+    },
+    entry: './src/main.ts',
     output: {
-        filename: 'bundle.js',
         path: path.resolve(__dirname, 'build'),
+        filename: '[name].[fullhash:8].js',
+        sourceMapFilename: '[name].[fullhash:8].map',
+        chunkFilename: '[id].[fullhash:8].js'
     },
     resolve: {
         extensions: ['.ts', '.js'],
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+        // plugins: [
+        //     threeMinifier.resolver,
+        // ]
     },
     module: {
         rules: [
@@ -44,31 +50,20 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({ template: 'index.html' }),
-        ...assetDirectories.map(directory => ({
-            apply: (compiler) => {
-                compiler.hooks.afterEmit.tap('CopyWebpackPlugin', () => {
-                    const sourcePath = path.join(__dirname, `src/assets/${directory}`);
-                    const destinationPath = path.join(__dirname, `build/assets/${directory}`);
-
-                    // Ensure that the parent directory exists
-                    if (!fs.existsSync(destinationPath)) {
-                        fs.mkdirSync(destinationPath, { recursive: true });
-                    }
-
-                    console.log(`Copying assets from src/assets/${directory}`);
-                    ncp(sourcePath, destinationPath, (err) => {
-                        if (err) {
-                            return console.error(err);
-                        }
-                        console.log(`Assets from src/assets/${directory} copied successfully`);
-                    });
-                });
-            },
-        })),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.join(__dirname, `src/assets/`),
+                    to: path.join(__dirname, `build/assets/`)
+                },
+            ],
+        }),
+        // new CleanWebpackPlugin(),
+        // threeMinifier,
     ],
-    devServer: {
-        static: path.join(__dirname, 'build'), // or whichever directory you want to serve
-        port: 8080,
-        open: true,
-    },
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: 'all',
+    //     },
+    // },
 };

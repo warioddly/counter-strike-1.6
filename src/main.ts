@@ -3,6 +3,11 @@ import {game} from "./modules";
 import {Player} from "./actors/player";
 import {World} from "./world";
 
+const maxFPS = 60;
+const frameDelay = 1000 / maxFPS;
+
+let lastFrameTime = 0;
+
 class Engine {
 
     private player: Player;
@@ -19,11 +24,18 @@ class Engine {
     }
 
 
-    private _animate( time: number ) {
+    private _animate( dt: number ) {
 
-        this.player.update(time);
+        const elapsed = dt - lastFrameTime;
 
-        game.renderer.render( game.scene, game.camera );
+        if (elapsed > frameDelay) {
+
+            this.player.update(dt);
+
+            game.update(dt);
+
+            lastFrameTime = dt - (elapsed % frameDelay);
+        }
 
     }
 
