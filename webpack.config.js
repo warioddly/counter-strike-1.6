@@ -24,9 +24,9 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js'],
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-        // plugins: [
-        //     threeMinifier.resolver,
-        // ]
+        plugins: [
+            threeMinifier.resolver,
+        ]
     },
     module: {
         rules: [
@@ -58,12 +58,12 @@ module.exports = {
                 },
             ],
         }),
-        // new CleanWebpackPlugin(),
-        // threeMinifier,
+        new CleanWebpackPlugin(),
+        threeMinifier,
     ],
-    // optimization: {
-    //     splitChunks: {
-    //         chunks: 'all',
-    //     },
-    // },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
 };
