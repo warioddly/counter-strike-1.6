@@ -1,6 +1,5 @@
 
-
-const HOST = `${window.location.protocol}//${window.location.host}`;
+const HOST = window.location.href;
 const STEPS_PER_FRAME = 5;
 const WORLD_GRAVITY = 1;
 const PLAYER_SPEED = 8;
