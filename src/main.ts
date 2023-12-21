@@ -2,6 +2,7 @@
 import {game} from "./modules";
 import {Player} from "./actors/player";
 import {World} from "./world";
+import {Platform} from "./modules/platform";
 
 const maxFPS = 60;
 const frameDelay = 1000 / maxFPS;
@@ -15,6 +16,8 @@ class Engine {
 
 
     constructor() {
+
+        new Platform();
 
         this.world = new World();
         this.player = new Player();

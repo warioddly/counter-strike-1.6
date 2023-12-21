@@ -5,8 +5,14 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {Character} from "./character";
 import {CharacterUtils} from "../utils";
 import {Capsule} from "three/examples/jsm/math/Capsule";
-import {PLAYER_SPEED, STEPS_PER_FRAME, PLAYER_MOUSE_SENSITIVITY} from "../constants";
 import {pathResolver} from "../utils/path_resolver";
+import {
+    PLAYER_SPEED,
+    STEPS_PER_FRAME,
+    PLAYER_MOUSE_SENSITIVITY,
+    WORLD_GRAVITY,
+    PLAYER_ON_FLOOR_SPEED
+} from "../constants";
 
 
 export class Player extends Character {
@@ -46,10 +52,9 @@ export class Player extends Character {
 
     }
 
-
     controls( dt: number ) {
 
-        const speedDelta = dt * PLAYER_SPEED;
+        const speedDelta = dt * ( this.playerOnFloor ? PLAYER_ON_FLOOR_SPEED : PLAYER_SPEED );
 
         if ( this.keyStates[ 'KeyW' ] ) {
 
@@ -99,7 +104,15 @@ export class Player extends Character {
 
     updatePosition( dt: number ) {
 
-        const damping = Math.exp( - 4 * dt ) - 1;
+        let damping = Math.exp( - 4 * dt ) - 1;
+
+        if ( ! this.playerOnFloor ) {
+
+            this.velocity.y -= WORLD_GRAVITY * dt;
+
+            damping *= 0.1;
+
+        }
 
         this.velocity.addScaledVector( this.velocity, damping );
 
@@ -108,6 +121,27 @@ export class Player extends Character {
 
         game.camera.position.copy( this.collider.end );
 
+    }
+
+
+    updateCollision( dt: number ) {
+
+        const result = game.octree.capsuleIntersect( this.collider );
+
+       this.playerOnFloor = false;
+
+        if ( result ) {
+
+            this.playerOnFloor = result.normal.y > 0;
+
+            if ( ! this.playerOnFloor ) {
+
+                this.velocity.addScaledVector( result.normal, - result.normal.dot( this.velocity ) );
+
+            }
+            this.collider.translate( result.normal.multiplyScalar( result.depth ) );
+
+        }
     }
 
 
@@ -121,6 +155,7 @@ export class Player extends Character {
 
             this.controls( deltaTime );
             this.updatePosition( deltaTime );
+            this.updateCollision( deltaTime );
 
         }
 

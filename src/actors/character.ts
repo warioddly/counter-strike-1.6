@@ -10,6 +10,7 @@ export abstract class Character {
     protected direction: THREE.Vector3 = new THREE.Vector3();
     protected keyStates: { [key: string]: boolean } = {};
     private skeleton: THREE.Skeleton;
+    protected playerOnFloor: boolean = false;
 
     protected initialized: boolean = false;
 
@@ -18,6 +19,7 @@ export abstract class Character {
     abstract update(dt: number);
     abstract controls(dt: number);
     abstract updatePosition(dt: number);
+    abstract updateCollision(dt: number);
     // abstract respawn();
     // abstract takeDamage();
 
